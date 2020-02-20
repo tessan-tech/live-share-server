@@ -1,1 +1,1 @@
-worker: yarn prod
+worker: node dist/index.js
