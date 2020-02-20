@@ -1,19 +1,18 @@
 import { Participant } from "./participant";
-import { Socket } from "./types/socket";
-import { Server } from "./types/server";
 import { Error, ErrorCode } from "./errors/error";
 import { IResponseEvent } from "./socket-events/IResponseEvent";
 import {
   ParticipantJoined,
   ParticipantLeft
 } from "./socket-events/response-events";
+const short = require("short-uuid");
 
 export class Conference {
   private participants: Participant[] = [];
   public readonly id: string;
 
   constructor() {
-    this.id = "unidjust3commeca";
+    this.id = short.generate();
   }
 
   public hasParticipant(): boolean {
