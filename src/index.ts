@@ -2,19 +2,15 @@ import socketServer from "socket.io";
 import { Store } from "./store";
 import { ConferenceService } from "./conferenceService";
 import { middlware as errorMiddlware } from "./errors/errorMiddlware";
-import { Error, ErrorCode } from "./errors/error";
+import { ParticipantController } from "./controllers/SocketController";
 
-const io = socketServer();
-const store = new Store();
-const conferences = new ConferenceService();
+const io = socketServer(3000);
+export const store = new Store();
+export const conferenceService = new ConferenceService();
 
 io.on("connection", socket => {
-    socket.use(errorMiddlware(socket));
-    socket.on("createConference", nickname => {
-        const hasConference = conferences.hasConference(socket);
-        if (hasConference)
-            throw new Error(ErrorCode.CANT_CREATE_CONFERENCE_USER_ALREADY_ASSIGNED);
-        const conference = conferences.createConference();
-        conference.addParticipant(nickname, socket);
-      });
+  console.log(`new connection connection socket id: ${socket.id}`);
+
+  socket.use(errorMiddlware(socket));
+  new ParticipantController(socket);
 });

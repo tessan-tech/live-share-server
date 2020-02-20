@@ -1,19 +1,20 @@
 import { Conference } from "./conference";
-import { Socket } from "./types/socket";
-import { flatten } from "lodash";
+import { Participant } from "./participant";
+import { ErrorCode } from "./errors/error";
 
 export class ConferenceService {
-    private conferences : Conference[] = [];
+  private conferences: Map<string, Conference> = new Map<string, Conference>();
 
-    public createConference() : Conference {
-        
-        const conference = new Conference();
-        this.conferences.push(conference);
-        return conference;
-    }
+  public createConference(): Conference {
+    const conference = new Conference();
+    this.conferences.set(conference.id, conference);
+    return conference;
+  }
 
-    public hasConference(socket : Socket) : boolean  {
-        const allParticipants = flatten(this.conferences.map(c => c.getParticipants()));
-        return allParticipants.find(p => p.socket.id === socket.id) !== undefined;
-    }
+  checkGetConference(id: string) {
+    const conference = this.conferences.get(id);
+    if (conference == undefined)
+      throw new Error(ErrorCode.CONFERENCE_DOES_NOT_EXIST);
+    return conference;
+  }
 }

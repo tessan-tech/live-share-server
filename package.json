@@ -3,14 +3,34 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
+    "start:watch": "nodemon",
+    "build": "tsc"
+  },
   "dependencies": {
-    "@types/node": "^13.7.0",
+    "@types/node": "^13.7.2",
     "lodash": "^4.17.15",
     "short-uuid": "^3.1.1",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",
-    "@types/socket.io": "^2.1.4"
+    "@types/socket.io": "^2.1.4",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.5"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
   }
 }

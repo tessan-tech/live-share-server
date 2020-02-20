@@ -1,15 +1,19 @@
 export class Error {
-    public readonly message?: string;
-    public readonly code: ErrorCode;
+  public readonly message?: string;
+  public readonly code: ErrorCode;
 
-    constructor(code: ErrorCode, message?: string) {
-        this.code = code;
-        this.message = message;
-    }
+  constructor(code: ErrorCode, message?: string) {
+    this.code = code;
+    this.message = message;
+  }
 }
 
 export enum ErrorCode {
-    UNKNOWN_ERROR = "UNKNOWN_ERROR",
-    CANT_CREATE_CONFERENCE_USER_ALREADY_ASSIGNED = "CANT_CREATE_CONFERENCE_USER_ALREADY_ASSIGNED",
-    CANT_FIND_PARTICIPANT = "CANT_FIND_PARTICIPANT"
+  UNKNOWN_ERROR = "UNKNOWN_ERROR",
+  CONFERENCE_DOES_NOT_EXIST = "CONFERENCE_DOES_NOT_EXIST",
+  USER_IS_NOT_IN_A_CONFERENCE = "USER_IS_NOT_IN_A_CONFERENCE",
+  CANT_CREATE_CONFERENCE_USER_ALREADY_ASSIGNED = "CANT_CREATE_CONFERENCE_USER_ALREADY_ASSIGNED",
+  CANT_FIND_PARTICIPANT = "CANT_FIND_PARTICIPANT",
+  CANT_REMOVE_PARTICIPANT_DOES_NOT_EXIST = "CANT_REMOVE_PARTICIPANT_DOES_NOT_EXIST",
+  NICKNAME_CONFLICT = "NICKNAME_CONFLICT"
 }
