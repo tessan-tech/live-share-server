@@ -37,15 +37,23 @@ export class Conference {
       throw new Error(ErrorCode.CANT_REMOVE_PARTICIPANT_DOES_NOT_EXIST);
     console.log(`${nickname} left conference ${this.id}`);
     this.participants = this.participants.filter(p => p !== toRemove);
-    this.participants.forEach(p => p.send(new ParticipantLeft(nickname)));
+    this.broadcast(new ParticipantLeft(nickname));
   }
 
-  public checkAddParticipant(participant: Participant) {
-    if (this.participants.find(p => p.nickname == participant.nickname))
+  public checkAddParticipant(newParticipant: Participant) {
+    if (this.participants.find(p => p.nickname == newParticipant.nickname))
       throw new Error(ErrorCode.NICKNAME_CONFLICT);
-    this.participants.forEach(p =>
-      p.send(new ParticipantJoined(participant.nickname))
+    this.participants.push(newParticipant);
+    this.broadcast(
+      new ParticipantJoined(newParticipant.nickname),
+      newParticipant.nickname
     );
-    this.participants.push(participant);
+  }
+
+  public broadcast(event: IResponseEvent, exceptNickname: string = undefined) {
+    const recipiants = exceptNickname
+      ? this.participants.filter(p => p.nickname !== exceptNickname.nickname)
+      : this.participants;
+    recipiants.forEach(p => p.send(event));
   }
 }

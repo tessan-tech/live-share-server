@@ -6,7 +6,8 @@ import { store, conferenceService } from "..";
 import { ParticipantData } from "../participantData";
 import {
   RTCHandshake,
-  ConferenceJoined
+  ConferenceJoined,
+  StreamStopped
 } from "../socket-events/response-events";
 import { IResponseEvent } from "../socket-events/IResponseEvent";
 
@@ -15,10 +16,11 @@ export class ParticipantController {
     socket.on("createConference", this.onCreateConference.bind(this));
     socket.on("joinConference", this.onJoinConference.bind(this));
     socket.on("rtcHandshake", this.onRTCHandshake.bind(this));
+    socket.on("streamStopped", this.onStreamStopped.bind(this));
     socket.on("disconnect", this.onDisconnect.bind(this));
   }
 
-  send(event: IResponseEvent) {
+  send(event: IResponseEvent): void {
     this.socket.emit(event.eventName, ...event.getArguments());
   }
 
@@ -29,13 +31,13 @@ export class ParticipantController {
     return data;
   }
 
-  onCreateConference(nickname: string) {
+  onCreateConference(nickname: string): void {
     const conference = conferenceService.createConference();
     console.log(`conference ${conference.id} cree`);
     this.checkJoinConference(conference, nickname);
   }
 
-  checkJoinConference(conference: Conference, nickname: string) {
+  checkJoinConference(conference: Conference, nickname: string): void {
     if (store.getData(this.socket.id) !== undefined)
       throw new Error(ErrorCode.CANT_CREATE_CONFERENCE_USER_ALREADY_ASSIGNED);
     conference.checkAddParticipant(new Participant(nickname, this.socket));
@@ -50,20 +52,24 @@ export class ParticipantController {
     this.send(confJoinedEvent);
   }
 
-  onJoinConference(conferenceId: string, nickname: string) {
+  onJoinConference(conferenceId: string, nickname: string): void {
     const conference = conferenceService.checkGetConference(conferenceId);
     this.checkJoinConference(conference, nickname);
   }
 
-  onDisconnect() {
-    console.log(`socket: ${this.socket.id} disconnected`);
+  onStreamStopped(streamId: string): void {
+    const { conference, nickname } = this.checkGetParticipantData();
+    conference.broadcast(new StreamStopped(nickname, streamId), nickname);
+  }
 
+  onDisconnect(): void {
+    console.log(`socket: ${this.socket.id} disconnected`);
     const participantData = store.getData(this.socket.id);
     if (!participantData) return;
     participantData.conference.removeParticipant(participantData.nickname);
   }
 
-  onRTCHandshake(recipientNickname: string, peerId: any, rtcInfos: any) {
+  onRTCHandshake(recipientNickname: string, peerId: any, rtcInfos: any): void {
     this.checkGetParticipantData()
       .conference.checkGetParticipant(recipientNickname)
       .send(
