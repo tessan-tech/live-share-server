@@ -52,7 +52,7 @@ export class Conference {
 
   public broadcast(event: IResponseEvent, exceptNickname: string = undefined) {
     const recipiants = exceptNickname
-      ? this.participants.filter(p => p.nickname !== exceptNickname.nickname)
+      ? this.participants.filter(p => p.nickname !== exceptNickname)
       : this.participants;
     recipiants.forEach(p => p.send(event));
   }
