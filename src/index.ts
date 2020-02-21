@@ -12,7 +12,7 @@ io.origins("*:*");
 export const store = new Store();
 export const conferenceService = new ConferenceService();
 
-app.get("/", (req, res) => {
+app.get("/", (req: any, res: any) => {
   res.send({ status: "OK" });
 });
 
@@ -22,6 +22,6 @@ io.on("connection", (socket: Socket) => {
   new ParticipantController(socket);
 });
 
-server.listen(3001, () => {
+server.listen(process.env.PORT || 5000, () => {
   console.log("listening...");
 });
