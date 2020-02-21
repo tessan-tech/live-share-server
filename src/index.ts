@@ -22,6 +22,6 @@ io.on("connection", (socket: Socket) => {
   new ParticipantController(socket);
 });
 
-server.listen(process.env.PORT || 5000, () => {
+io.listen(process.env.PORT || 5000, () => {
   console.log("listening...");
 });
