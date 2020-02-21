@@ -18,6 +18,6 @@ io.on("connection", (socket: Socket) => {
   new ParticipantController(socket);
 });
 
-server.listen(80, () => {
+server.listen(3000, () => {
   console.log("listening...");
 });
