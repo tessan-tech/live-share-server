@@ -1,3 +1,4 @@
+console.log("test");
 import socketServer from "socket.io";
 import { Store } from "./store";
 import { ConferenceService } from "./conferenceService";
