@@ -5,6 +5,7 @@ import { middlware as errorMiddlware } from "./errors/errorMiddlware";
 import { ParticipantController } from "./controllers/SocketController";
 
 const io = socketServer(3000);
+io.origins("*:*");
 export const store = new Store();
 export const conferenceService = new ConferenceService();
 
