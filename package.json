@@ -4,8 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build-ts": "tsc",
-    "postinstall": "yarn build-ts",
     "serve": "node dist/index.js",
     "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
     "start:watch": "nodemon",
