@@ -9,6 +9,9 @@
     "start:watch": "nodemon",
     "build": "tsc"
   },
+  "engines": {
+    "node": "12.9.0"
+  },
   "dependencies": {
     "@types/express": "^4.17.2",
     "@types/node": "^13.7.2",
@@ -16,6 +19,7 @@
     "express": "^4.17.1",
     "lodash": "^4.17.15",
     "short-uuid": "^3.1.1",
+    "shortid": "^2.2.15",
     "socket.io": "^2.3.0",
     "ts-node": "^8.6.2"
   },

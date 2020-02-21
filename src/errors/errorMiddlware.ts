@@ -2,24 +2,23 @@ import { Packet } from "../types/packet";
 import { Socket } from "../types/socket";
 import { Error, ErrorCode } from "./error";
 
-export class ErrorMiddlware {
-    private readonly socket : Socket;
-
-    constructor(socket: Socket){
-        this.socket = socket;
-    }
-
-    public onMessage(packet : Packet, next: (error? : Error | any ) => void) {
+export function createMiddlware(
+  socket: Socket
+): (packet: Packet, next: (err?: any) => void) => void {
+  return function(packet: Packet, next: (err?: any) => void) {
+    const prevOn = socket.on;
+    socket.on = function(
+      event: string | symbol,
+      listener: (...args: any[]) => void
+    ) {
+      prevOn(event, (...args: any[]) => {
         try {
-            next();
+          listener(...args);
         } catch (error) {
-            this.socket.emit("ERROR", error.code || ErrorCode.UNKNOWN_ERROR);
+          console.log(error);
         }
-    }
-}
-
-export function middlware(socket: Socket) :  (packet : Packet, next: (error? : any ) => void) => void {
-
-    const middlware = new ErrorMiddlware(socket);
-    return middlware.onMessage.bind(middlware);
+      });
+      return this;
+    }.bind(socket);
+  };
 }

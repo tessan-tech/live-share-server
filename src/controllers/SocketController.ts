@@ -53,12 +53,16 @@ export class ParticipantController {
   }
 
   onJoinConference(conferenceId: string, nickname: string): void {
-    const conference = conferenceService.checkGetConference(conferenceId);
+    const conference =
+      conferenceService.getConference(conferenceId) ||
+      conferenceService.createConference(conferenceId);
     this.checkJoinConference(conference, nickname);
   }
 
   onStreamStopped(streamId: string): void {
     const { conference, nickname } = this.checkGetParticipantData();
+    console.log(`stream ${streamId} stopped`);
+
     conference.broadcast(new StreamStopped(nickname, streamId), nickname);
   }
 
@@ -66,7 +70,10 @@ export class ParticipantController {
     console.log(`socket: ${this.socket.id} disconnected`);
     const participantData = store.getData(this.socket.id);
     if (!participantData) return;
-    participantData.conference.removeParticipant(participantData.nickname);
+    const conference = participantData.conference;
+    conference.removeParticipant(participantData.nickname);
+    if (!conference.hasParticipant())
+      conferenceService.removeConference(conference);
   }
 
   onRTCHandshake(recipientNickname: string, peerId: any, rtcInfos: any): void {

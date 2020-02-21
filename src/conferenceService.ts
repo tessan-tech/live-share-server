@@ -5,10 +5,14 @@ import { ErrorCode } from "./errors/error";
 export class ConferenceService {
   private conferences: Map<string, Conference> = new Map<string, Conference>();
 
-  public createConference(): Conference {
-    const conference = new Conference();
+  public createConference(id: string = undefined): Conference {
+    const conference = new Conference(id);
     this.conferences.set(conference.id, conference);
     return conference;
+  }
+
+  getConference(id: string): Conference {
+    return this.conferences.get(id);
   }
 
   checkGetConference(id: string): Conference {
@@ -16,5 +20,10 @@ export class ConferenceService {
     if (conference == undefined)
       throw new Error(ErrorCode.CONFERENCE_DOES_NOT_EXIST);
     return conference;
+  }
+
+  removeConference(conference: Conference): void {
+    this.conferences.delete(conference.id);
+    console.log(`conference ${conference.id} deleted`);
   }
 }

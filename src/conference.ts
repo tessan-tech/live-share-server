@@ -5,14 +5,14 @@ import {
   ParticipantJoined,
   ParticipantLeft
 } from "./socket-events/response-events";
-const short = require("short-uuid");
+const shortid = require("shortid");
 
 export class Conference {
   private participants: Participant[] = [];
   public readonly id: string;
 
-  constructor() {
-    this.id = short.generate();
+  constructor(id: string = undefined) {
+    this.id = id || shortid.generate();
   }
 
   public hasParticipant(): boolean {
