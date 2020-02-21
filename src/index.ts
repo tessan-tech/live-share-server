@@ -12,6 +12,10 @@ io.origins("*:*");
 export const store = new Store();
 export const conferenceService = new ConferenceService();
 
+app.get("/", (req, res) => {
+  res.send({ status: "OK" });
+});
+
 io.on("connection", (socket: Socket) => {
   console.log(`new connection connection socket id: ${socket.id}`);
   socket.use(errorMiddlware(socket));
