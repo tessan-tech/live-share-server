@@ -5,8 +5,8 @@ import { ParticipantController } from "./controllers/SocketController";
 import express from "express";
 import socketIO from "socket.io";
 
-const app = express().listen(process.env.PORT, () =>
-  console.log("Listening on port: " + process.env.PORT)
+const app = express().listen(process.env.PORT || 3001, () =>
+  console.log("Listening on port: " + (process.env.PORT || 3001))
 );
 const io = socketIO(app);
 io.origins("*:*");
