@@ -11,7 +11,7 @@ export class ConferenceService {
     return conference;
   }
 
-  checkGetConference(id: string) {
+  checkGetConference(id: string): Conference {
     const conference = this.conferences.get(id);
     if (conference == undefined)
       throw new Error(ErrorCode.CONFERENCE_DOES_NOT_EXIST);

@@ -5,7 +5,8 @@ enum Response {
   PARTICIPANT_JOINED = "participantJoined",
   PARTICIPANT_LEFT = "participantLeft",
   CONFERENCE_JOINED = "conferenceJoined",
-  RTC_HANDSHAKE = "rtcHandshake"
+  RTC_HANDSHAKE = "rtcHandshake",
+  STREAM_STOPPED = "streamStopped"
 }
 
 export class ParticipantJoined implements IResponseEvent {
@@ -53,5 +54,14 @@ export class RTCHandshake implements IResponseEvent {
 
   getArguments(): any[] {
     return [this.senderNickname, this.peerId, this.rtcInfos];
+  }
+}
+
+export class StreamStopped implements IResponseEvent {
+  eventName = Response.STREAM_STOPPED;
+  constructor(private senderNickname: string, private streamId: string) {}
+
+  getArguments(): any[] {
+    return [this.senderNickname, this.streamId];
   }
 }

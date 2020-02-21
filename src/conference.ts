@@ -1,19 +1,18 @@
 import { Participant } from "./participant";
-import { Socket } from "./types/socket";
-import { Server } from "./types/server";
 import { Error, ErrorCode } from "./errors/error";
 import { IResponseEvent } from "./socket-events/IResponseEvent";
 import {
   ParticipantJoined,
   ParticipantLeft
 } from "./socket-events/response-events";
+const short = require("short-uuid");
 
 export class Conference {
   private participants: Participant[] = [];
   public readonly id: string;
 
   constructor() {
-    this.id = "unidjust3commeca";
+    this.id = short.generate();
   }
 
   public hasParticipant(): boolean {
@@ -37,15 +36,23 @@ export class Conference {
       throw new Error(ErrorCode.CANT_REMOVE_PARTICIPANT_DOES_NOT_EXIST);
     console.log(`${nickname} left conference ${this.id}`);
     this.participants = this.participants.filter(p => p !== toRemove);
-    this.participants.forEach(p => p.send(new ParticipantLeft(nickname)));
+    this.broadcast(new ParticipantLeft(nickname));
   }
 
-  public checkAddParticipant(participant: Participant) {
-    if (this.participants.find(p => p.nickname == participant.nickname))
+  public checkAddParticipant(newParticipant: Participant) {
+    if (this.participants.find(p => p.nickname == newParticipant.nickname))
       throw new Error(ErrorCode.NICKNAME_CONFLICT);
-    this.participants.forEach(p =>
-      p.send(new ParticipantJoined(participant.nickname))
+    this.participants.push(newParticipant);
+    this.broadcast(
+      new ParticipantJoined(newParticipant.nickname),
+      newParticipant.nickname
     );
-    this.participants.push(participant);
+  }
+
+  public broadcast(event: IResponseEvent, exceptNickname: string = undefined) {
+    const recipiants = exceptNickname
+      ? this.participants.filter(p => p.nickname !== exceptNickname)
+      : this.participants;
+    recipiants.forEach(p => p.send(event));
   }
 }

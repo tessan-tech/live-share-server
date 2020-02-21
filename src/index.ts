@@ -8,6 +8,7 @@ import express from "express";
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
+io.origins("*:*");
 export const store = new Store();
 export const conferenceService = new ConferenceService();
 
